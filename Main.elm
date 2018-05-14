@@ -10,6 +10,7 @@ import Json.Encode
 import Json.Decode
 import Json.Decode.Pipeline
 import Http exposing (..)
+import RailwayColour exposing (..)
 
 decodeStatus : Json.Decode.Decoder RailwayStatus
 decodeStatus =
@@ -33,7 +34,6 @@ encodeStatus record =
         , ( "lastupdateGmt", Json.Encode.int <| record.lastupdateGmt )
         , ( "source", Json.Encode.string <| record.source )
         ]
-
 
 main : Program Never Model Msg
 main =
@@ -107,6 +107,7 @@ list statuses =
                     [ th [] [ text "線路名" ]
                     , th [] [ text "会社" ]
                     , th [] [ text "更新時刻" ]
+                    , th [] [ text "色" ]
                     -- , th [] [ text "ソース" ]
                     ]
                 ]
@@ -120,6 +121,7 @@ statusRow status =
         [ td [] [ text status.name ]
         , td [] [ text status.company ]
         , td [] [ text (String.slice 1 -1 (toString ((format config config.format.dateTime) (Date.fromTime (toFloat status.lastupdateGmt * 1000))))) ]
+        , td [] [ text (RailwayColour.railwayColour status.name) ]
         -- , td [] [ text status.source ]
         , td []
             []

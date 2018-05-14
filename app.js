@@ -9316,6 +9316,740 @@ var _elm_lang$http$Http$StringPart = F2(
 	});
 var _elm_lang$http$Http$stringPart = _elm_lang$http$Http$StringPart;
 
+var _lovasoa$elm_csv$Helper$parseRemaining = F4(
+	function (separator, quoted, remaining, done) {
+		parseRemaining:
+		while (true) {
+			if (_elm_lang$core$Native_Utils.eq(remaining, '')) {
+				return done;
+			} else {
+				if ((!_elm_lang$core$Native_Utils.eq(separator, '')) && ((!quoted) && A2(_elm_lang$core$String$startsWith, separator, remaining))) {
+					var nextChars = A2(
+						_elm_lang$core$String$dropLeft,
+						_elm_lang$core$String$length(separator),
+						remaining);
+					var newQuoted = false;
+					var _v0 = separator,
+						_v1 = false,
+						_v2 = nextChars,
+						_v3 = {ctor: '::', _0: '', _1: done};
+					separator = _v0;
+					quoted = _v1;
+					remaining = _v2;
+					done = _v3;
+					continue parseRemaining;
+				} else {
+					var nextNextChar = A3(_elm_lang$core$String$slice, 1, 2, remaining);
+					var nextChar = A3(_elm_lang$core$String$slice, 0, 1, remaining);
+					var isEscapedQuote = (!quoted) && ((_elm_lang$core$Native_Utils.eq(nextChar, '\\') || _elm_lang$core$Native_Utils.eq(nextChar, '\"')) && _elm_lang$core$Native_Utils.eq(nextNextChar, '\"'));
+					var nextChars = A2(
+						_elm_lang$core$String$dropLeft,
+						isEscapedQuote ? 2 : 1,
+						remaining);
+					var endQuote = quoted && (_elm_lang$core$Native_Utils.eq(nextChar, '\"') && (!isEscapedQuote));
+					var others = A2(
+						_elm_lang$core$Maybe$withDefault,
+						{ctor: '[]'},
+						_elm_lang$core$List$tail(done));
+					var current = A2(
+						_elm_lang$core$Maybe$withDefault,
+						'',
+						_elm_lang$core$List$head(done));
+					var startQuote = _elm_lang$core$Native_Utils.eq(nextChar, '\"') && ((!_elm_lang$core$Native_Utils.eq(nextNextChar, '\"')) && _elm_lang$core$Native_Utils.eq(current, ''));
+					var newQuoted = (quoted && (!endQuote)) || startQuote;
+					var newChar = isEscapedQuote ? '\"' : ((startQuote || endQuote) ? '' : nextChar);
+					var newDone = {
+						ctor: '::',
+						_0: A2(_elm_lang$core$Basics_ops['++'], current, newChar),
+						_1: others
+					};
+					var _v4 = separator,
+						_v5 = newQuoted,
+						_v6 = nextChars,
+						_v7 = newDone;
+					separator = _v4;
+					quoted = _v5;
+					remaining = _v6;
+					done = _v7;
+					continue parseRemaining;
+				}
+			}
+		}
+	});
+var _lovasoa$elm_csv$Helper$splitLineWith = F2(
+	function (separator, line) {
+		return _elm_lang$core$List$reverse(
+			A4(
+				_lovasoa$elm_csv$Helper$parseRemaining,
+				separator,
+				false,
+				line,
+				{ctor: '[]'}));
+	});
+var _lovasoa$elm_csv$Helper$splitLine = _lovasoa$elm_csv$Helper$splitLineWith(',');
+
+var _lovasoa$elm_csv$Csv$splitWith = F2(
+	function (separator, lines) {
+		var values = A2(
+			_elm_lang$core$List$filter,
+			function (x) {
+				return !_elm_lang$core$String$isEmpty(x);
+			},
+			_elm_lang$core$String$lines(lines));
+		return A2(
+			_elm_lang$core$List$map,
+			_lovasoa$elm_csv$Helper$splitLineWith(separator),
+			values);
+	});
+var _lovasoa$elm_csv$Csv$split = _lovasoa$elm_csv$Csv$splitWith(',');
+var _lovasoa$elm_csv$Csv$parseWith = F2(
+	function (separator, lines) {
+		var values = A2(_lovasoa$elm_csv$Csv$splitWith, separator, lines);
+		var headers = A2(
+			_elm_lang$core$Maybe$withDefault,
+			{ctor: '[]'},
+			_elm_lang$core$List$head(values));
+		var records = A2(_elm_lang$core$List$drop, 1, values);
+		return {headers: headers, records: records};
+	});
+var _lovasoa$elm_csv$Csv$parse = _lovasoa$elm_csv$Csv$parseWith(',');
+var _lovasoa$elm_csv$Csv$Csv = F2(
+	function (a, b) {
+		return {headers: a, records: b};
+	});
+
+var _jinjor$elm_csv_decode$CsvDecode$formatErrorPosition = function (rowIndex) {
+	return A2(
+		_elm_lang$core$Basics_ops['++'],
+		'at record[',
+		A2(
+			_elm_lang$core$Basics_ops['++'],
+			_elm_lang$core$Basics$toString(rowIndex),
+			']'));
+};
+var _jinjor$elm_csv_decode$CsvDecode$formatError = function (e) {
+	var _p0 = e;
+	switch (_p0.ctor) {
+		case 'ColumnNotFoundInHeader':
+			return A2(
+				_elm_lang$core$Basics_ops['++'],
+				'column \'',
+				A2(
+					_elm_lang$core$Basics_ops['++'],
+					_p0._1,
+					A2(
+						_elm_lang$core$Basics_ops['++'],
+						'\' does not exist in header ',
+						_jinjor$elm_csv_decode$CsvDecode$formatErrorPosition(_p0._0))));
+		case 'ColumnNotFoundInBody':
+			return A2(
+				_elm_lang$core$Basics_ops['++'],
+				'column[',
+				A2(
+					_elm_lang$core$Basics_ops['++'],
+					_elm_lang$core$Basics$toString(_p0._1),
+					A2(
+						_elm_lang$core$Basics_ops['++'],
+						']',
+						A2(
+							_elm_lang$core$Basics_ops['++'],
+							function () {
+								var _p1 = _p0._2;
+								if (_p1.ctor === 'Just') {
+									return A2(
+										_elm_lang$core$Basics_ops['++'],
+										' namely \'',
+										A2(_elm_lang$core$Basics_ops['++'], _p1._0, '\''));
+								} else {
+									return '';
+								}
+							}(),
+							A2(
+								_elm_lang$core$Basics_ops['++'],
+								' does not exist ',
+								_jinjor$elm_csv_decode$CsvDecode$formatErrorPosition(_p0._0))))));
+		case 'EmptyValue':
+			return A2(
+				_elm_lang$core$Basics_ops['++'],
+				'unexpected empty value ',
+				_jinjor$elm_csv_decode$CsvDecode$formatErrorPosition(_p0._0));
+		case 'InvalidDataType':
+			return A2(
+				_elm_lang$core$Basics_ops['++'],
+				_p0._1,
+				A2(
+					_elm_lang$core$Basics_ops['++'],
+					' ',
+					_jinjor$elm_csv_decode$CsvDecode$formatErrorPosition(_p0._0)));
+		case 'AmbiguousFieldToAccess':
+			return A2(
+				_elm_lang$core$Basics_ops['++'],
+				'accessed field \'',
+				A2(
+					_elm_lang$core$Basics_ops['++'],
+					_p0._1,
+					A2(
+						_elm_lang$core$Basics_ops['++'],
+						'\' is ambiguous ',
+						_jinjor$elm_csv_decode$CsvDecode$formatErrorPosition(_p0._0))));
+		case 'AmbiguousFieldToReturn':
+			return A2(
+				_elm_lang$core$Basics_ops['++'],
+				'field \'',
+				A2(
+					_elm_lang$core$Basics_ops['++'],
+					_p0._1,
+					A2(
+						_elm_lang$core$Basics_ops['++'],
+						'\' is duplicated ',
+						_jinjor$elm_csv_decode$CsvDecode$formatErrorPosition(_p0._0))));
+		default:
+			return A2(
+				_elm_lang$core$Basics_ops['++'],
+				_p0._1,
+				A2(
+					_elm_lang$core$Basics_ops['++'],
+					' ',
+					_jinjor$elm_csv_decode$CsvDecode$formatErrorPosition(_p0._0)));
+	}
+};
+var _jinjor$elm_csv_decode$CsvDecode$makeNameToIndexDictHelp = F3(
+	function (index, names, dict) {
+		makeNameToIndexDictHelp:
+		while (true) {
+			var _p2 = names;
+			if (_p2.ctor === '[]') {
+				return dict;
+			} else {
+				var _v4 = index + 1,
+					_v5 = _p2._1,
+					_v6 = A3(
+					_elm_lang$core$Dict$update,
+					_p2._0,
+					function (maybeValue) {
+						var _p3 = maybeValue;
+						if (_p3.ctor === 'Just') {
+							return _elm_lang$core$Maybe$Just(-1);
+						} else {
+							return _elm_lang$core$Maybe$Just(index);
+						}
+					},
+					dict);
+				index = _v4;
+				names = _v5;
+				dict = _v6;
+				continue makeNameToIndexDictHelp;
+			}
+		}
+	});
+var _jinjor$elm_csv_decode$CsvDecode$makeNameToIndexDict = function (names) {
+	return A3(_jinjor$elm_csv_decode$CsvDecode$makeNameToIndexDictHelp, 0, names, _elm_lang$core$Dict$empty);
+};
+var _jinjor$elm_csv_decode$CsvDecode$defaultOptions = {separator: ',', noHeader: false};
+var _jinjor$elm_csv_decode$CsvDecode$decodeItem = F4(
+	function (_p4, header, rowIndex, item) {
+		var _p5 = _p4;
+		return A3(_p5._0, header, rowIndex, item);
+	});
+var _jinjor$elm_csv_decode$CsvDecode$decodeItemsHelp = F5(
+	function (decoder, header, items, rowIndex, list) {
+		decodeItemsHelp:
+		while (true) {
+			var _p6 = items;
+			if (_p6.ctor === '[]') {
+				return _elm_lang$core$Result$Ok(
+					_elm_lang$core$List$reverse(list));
+			} else {
+				var _p7 = A4(_jinjor$elm_csv_decode$CsvDecode$decodeItem, decoder, header, rowIndex, _p6._0);
+				if (_p7.ctor === 'Ok') {
+					var _v10 = decoder,
+						_v11 = header,
+						_v12 = _p6._1,
+						_v13 = rowIndex + 1,
+						_v14 = {ctor: '::', _0: _p7._0, _1: list};
+					decoder = _v10;
+					header = _v11;
+					items = _v12;
+					rowIndex = _v13;
+					list = _v14;
+					continue decodeItemsHelp;
+				} else {
+					return _elm_lang$core$Result$Err(_p7._0);
+				}
+			}
+		}
+	});
+var _jinjor$elm_csv_decode$CsvDecode$decodeItems = F3(
+	function (decoder, header, items) {
+		return A5(
+			_jinjor$elm_csv_decode$CsvDecode$decodeItemsHelp,
+			decoder,
+			header,
+			items,
+			0,
+			{ctor: '[]'});
+	});
+var _jinjor$elm_csv_decode$CsvDecode$decodeItemsAllHelp = F5(
+	function (decoder, header, items, rowIndex, _p8) {
+		decodeItemsAllHelp:
+		while (true) {
+			var _p9 = _p8;
+			var _p14 = _p9._0;
+			var _p13 = _p9._1;
+			var _p10 = items;
+			if (_p10.ctor === '[]') {
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$List$reverse(_p14),
+					_1: _elm_lang$core$List$reverse(_p13)
+				};
+			} else {
+				var _p12 = _p10._1;
+				var _p11 = A4(_jinjor$elm_csv_decode$CsvDecode$decodeItem, decoder, header, rowIndex, _p10._0);
+				if (_p11.ctor === 'Ok') {
+					var _v18 = decoder,
+						_v19 = header,
+						_v20 = _p12,
+						_v21 = rowIndex + 1,
+						_v22 = {
+						ctor: '_Tuple2',
+						_0: {ctor: '::', _0: _p11._0, _1: _p14},
+						_1: _p13
+					};
+					decoder = _v18;
+					header = _v19;
+					items = _v20;
+					rowIndex = _v21;
+					_p8 = _v22;
+					continue decodeItemsAllHelp;
+				} else {
+					var _v23 = decoder,
+						_v24 = header,
+						_v25 = _p12,
+						_v26 = rowIndex + 1,
+						_v27 = {
+						ctor: '_Tuple2',
+						_0: _p14,
+						_1: {ctor: '::', _0: _p11._0, _1: _p13}
+					};
+					decoder = _v23;
+					header = _v24;
+					items = _v25;
+					rowIndex = _v26;
+					_p8 = _v27;
+					continue decodeItemsAllHelp;
+				}
+			}
+		}
+	});
+var _jinjor$elm_csv_decode$CsvDecode$decodeItemsAll = F3(
+	function (decoder, header, items) {
+		return A5(
+			_jinjor$elm_csv_decode$CsvDecode$decodeItemsAllHelp,
+			decoder,
+			header,
+			items,
+			0,
+			{
+				ctor: '_Tuple2',
+				_0: {ctor: '[]'},
+				_1: {ctor: '[]'}
+			});
+	});
+var _jinjor$elm_csv_decode$CsvDecode$Options = F2(
+	function (a, b) {
+		return {separator: a, noHeader: b};
+	});
+var _jinjor$elm_csv_decode$CsvDecode$Header = F2(
+	function (a, b) {
+		return {nameToIndex: a, indexToName: b};
+	});
+var _jinjor$elm_csv_decode$CsvDecode$prepareData = F2(
+	function (options, source) {
+		var realSource = options.noHeader ? A2(_elm_lang$core$Basics_ops['++'], 'dummy\n', source) : source;
+		var csv = A2(_lovasoa$elm_csv$Csv$parseWith, options.separator, realSource);
+		var header = options.noHeader ? A2(_jinjor$elm_csv_decode$CsvDecode$Header, _elm_lang$core$Dict$empty, _elm_lang$core$Dict$empty) : A2(
+			_jinjor$elm_csv_decode$CsvDecode$Header,
+			_jinjor$elm_csv_decode$CsvDecode$makeNameToIndexDict(csv.headers),
+			_elm_lang$core$Dict$fromList(
+				A2(
+					_elm_lang$core$List$indexedMap,
+					F2(
+						function (v0, v1) {
+							return {ctor: '_Tuple2', _0: v0, _1: v1};
+						}),
+					csv.headers)));
+		var items = csv.records;
+		return {ctor: '_Tuple2', _0: header, _1: items};
+	});
+var _jinjor$elm_csv_decode$CsvDecode$runWithOptions = F3(
+	function (options, decoder, source) {
+		var _p15 = A2(_jinjor$elm_csv_decode$CsvDecode$prepareData, options, source);
+		var header = _p15._0;
+		var items = _p15._1;
+		return A2(
+			_elm_lang$core$Result$mapError,
+			_jinjor$elm_csv_decode$CsvDecode$formatError,
+			A3(_jinjor$elm_csv_decode$CsvDecode$decodeItems, decoder, header, items));
+	});
+var _jinjor$elm_csv_decode$CsvDecode$run = _jinjor$elm_csv_decode$CsvDecode$runWithOptions(_jinjor$elm_csv_decode$CsvDecode$defaultOptions);
+var _jinjor$elm_csv_decode$CsvDecode$runAllWithOptions = F3(
+	function (options, decoder, source) {
+		var _p16 = A2(_jinjor$elm_csv_decode$CsvDecode$prepareData, options, source);
+		var header = _p16._0;
+		var items = _p16._1;
+		return A2(
+			_elm_lang$core$Tuple$mapSecond,
+			_elm_lang$core$List$map(_jinjor$elm_csv_decode$CsvDecode$formatError),
+			A3(_jinjor$elm_csv_decode$CsvDecode$decodeItemsAll, decoder, header, items));
+	});
+var _jinjor$elm_csv_decode$CsvDecode$runAll = F2(
+	function (decoder, source) {
+		return A3(_jinjor$elm_csv_decode$CsvDecode$runAllWithOptions, _jinjor$elm_csv_decode$CsvDecode$defaultOptions, decoder, source);
+	});
+var _jinjor$elm_csv_decode$CsvDecode$Decoder = function (a) {
+	return {ctor: 'Decoder', _0: a};
+};
+var _jinjor$elm_csv_decode$CsvDecode$succeed = function (a) {
+	return _jinjor$elm_csv_decode$CsvDecode$Decoder(
+		F3(
+			function (_p19, _p18, _p17) {
+				return _elm_lang$core$Result$Ok(a);
+			}));
+};
+var _jinjor$elm_csv_decode$CsvDecode$string = function (_p20) {
+	var _p21 = _p20;
+	return _jinjor$elm_csv_decode$CsvDecode$Decoder(
+		F3(
+			function (header, rowIndex, item) {
+				var _p22 = A3(_p21._0, header, rowIndex, item);
+				if ((_p22.ctor === 'Err') && (_p22._0.ctor === 'EmptyValue')) {
+					return _elm_lang$core$Result$Ok(_p22._0._1);
+				} else {
+					return _p22;
+				}
+			}));
+};
+var _jinjor$elm_csv_decode$CsvDecode$optional = function (_p23) {
+	var _p24 = _p23;
+	return _jinjor$elm_csv_decode$CsvDecode$Decoder(
+		F3(
+			function (header, rowIndex, item) {
+				var _p25 = A3(_p24._0, header, rowIndex, item);
+				if (_p25.ctor === 'Ok') {
+					return _elm_lang$core$Result$Ok(
+						_elm_lang$core$Maybe$Just(_p25._0));
+				} else {
+					switch (_p25._0.ctor) {
+						case 'ColumnNotFoundInHeader':
+							return _elm_lang$core$Result$Ok(_elm_lang$core$Maybe$Nothing);
+						case 'ColumnNotFoundInBody':
+							return _elm_lang$core$Result$Ok(_elm_lang$core$Maybe$Nothing);
+						case 'EmptyValue':
+							return _elm_lang$core$Result$Ok(_elm_lang$core$Maybe$Nothing);
+						default:
+							return _elm_lang$core$Result$Err(_p25._0);
+					}
+				}
+			}));
+};
+var _jinjor$elm_csv_decode$CsvDecode_ops = _jinjor$elm_csv_decode$CsvDecode_ops || {};
+_jinjor$elm_csv_decode$CsvDecode_ops['|='] = F2(
+	function (_p27, _p26) {
+		var _p28 = _p27;
+		var _p29 = _p26;
+		return _jinjor$elm_csv_decode$CsvDecode$Decoder(
+			F3(
+				function (header, rowIndex, item) {
+					return A3(
+						_elm_lang$core$Result$map2,
+						F2(
+							function (t, a) {
+								return t(a);
+							}),
+						A3(_p28._0, header, rowIndex, item),
+						A3(_p29._0, header, rowIndex, item));
+				}));
+	});
+var _jinjor$elm_csv_decode$CsvDecode$map = F2(
+	function (transform, _p30) {
+		var _p31 = _p30;
+		return _jinjor$elm_csv_decode$CsvDecode$Decoder(
+			F3(
+				function (header, rowIndex, item) {
+					return A2(
+						_elm_lang$core$Result$map,
+						transform,
+						A3(_p31._0, header, rowIndex, item));
+				}));
+	});
+var _jinjor$elm_csv_decode$CsvDecode$andThen = F2(
+	function (toDecoder, _p32) {
+		var _p33 = _p32;
+		return _jinjor$elm_csv_decode$CsvDecode$Decoder(
+			F3(
+				function (header, rowIndex, item) {
+					return A2(
+						_elm_lang$core$Result$andThen,
+						function (a) {
+							return A4(
+								_jinjor$elm_csv_decode$CsvDecode$decodeItem,
+								toDecoder(a),
+								header,
+								rowIndex,
+								item);
+						},
+						A3(_p33._0, header, rowIndex, item));
+				}));
+	});
+var _jinjor$elm_csv_decode$CsvDecode$Fail = F2(
+	function (a, b) {
+		return {ctor: 'Fail', _0: a, _1: b};
+	});
+var _jinjor$elm_csv_decode$CsvDecode$fail = function (message) {
+	return _jinjor$elm_csv_decode$CsvDecode$Decoder(
+		F3(
+			function (_p35, rowIndex, _p34) {
+				return _elm_lang$core$Result$Err(
+					A2(_jinjor$elm_csv_decode$CsvDecode$Fail, rowIndex, message));
+			}));
+};
+var _jinjor$elm_csv_decode$CsvDecode$AmbiguousFieldToReturn = F2(
+	function (a, b) {
+		return {ctor: 'AmbiguousFieldToReturn', _0: a, _1: b};
+	});
+var _jinjor$elm_csv_decode$CsvDecode$makeDictInRangeHelp = F3(
+	function (rowIndex, dict, list) {
+		makeDictInRangeHelp:
+		while (true) {
+			var _p36 = list;
+			if (_p36.ctor === '[]') {
+				return _elm_lang$core$Result$Ok(dict);
+			} else {
+				var _p37 = _p36._0._0;
+				if (A2(_elm_lang$core$Dict$member, _p37, dict)) {
+					return _elm_lang$core$Result$Err(
+						A2(_jinjor$elm_csv_decode$CsvDecode$AmbiguousFieldToReturn, rowIndex, _p37));
+				} else {
+					var _v37 = rowIndex,
+						_v38 = A3(_elm_lang$core$Dict$insert, _p37, _p36._0._1, dict),
+						_v39 = _p36._1;
+					rowIndex = _v37;
+					dict = _v38;
+					list = _v39;
+					continue makeDictInRangeHelp;
+				}
+			}
+		}
+	});
+var _jinjor$elm_csv_decode$CsvDecode$makeDictInRange = F4(
+	function (isInRange, header, rowIndex, item) {
+		return A3(
+			_jinjor$elm_csv_decode$CsvDecode$makeDictInRangeHelp,
+			rowIndex,
+			_elm_lang$core$Dict$empty,
+			A2(
+				_elm_lang$core$List$filterMap,
+				_elm_lang$core$Basics$identity,
+				A2(
+					_elm_lang$core$List$indexedMap,
+					F2(
+						function (i, value) {
+							return isInRange(i) ? A2(
+								_elm_lang$core$Maybe$map,
+								function (key) {
+									return {ctor: '_Tuple2', _0: key, _1: value};
+								},
+								A2(_elm_lang$core$Dict$get, i, header.indexToName)) : _elm_lang$core$Maybe$Nothing;
+						}),
+					item)));
+	});
+var _jinjor$elm_csv_decode$CsvDecode$AmbiguousFieldToAccess = F2(
+	function (a, b) {
+		return {ctor: 'AmbiguousFieldToAccess', _0: a, _1: b};
+	});
+var _jinjor$elm_csv_decode$CsvDecode$InvalidDataType = F2(
+	function (a, b) {
+		return {ctor: 'InvalidDataType', _0: a, _1: b};
+	});
+var _jinjor$elm_csv_decode$CsvDecode$int = function (_p38) {
+	var _p39 = _p38;
+	return _jinjor$elm_csv_decode$CsvDecode$Decoder(
+		F3(
+			function (header, rowIndex, item) {
+				return A2(
+					_elm_lang$core$Result$andThen,
+					function (s) {
+						return A2(
+							_elm_lang$core$Result$mapError,
+							_jinjor$elm_csv_decode$CsvDecode$InvalidDataType(rowIndex),
+							_elm_lang$core$String$toInt(s));
+					},
+					A3(_p39._0, header, rowIndex, item));
+			}));
+};
+var _jinjor$elm_csv_decode$CsvDecode$float = function (_p40) {
+	var _p41 = _p40;
+	return _jinjor$elm_csv_decode$CsvDecode$Decoder(
+		F3(
+			function (header, rowIndex, item) {
+				return A2(
+					_elm_lang$core$Result$andThen,
+					function (s) {
+						return A2(
+							_elm_lang$core$Result$mapError,
+							_jinjor$elm_csv_decode$CsvDecode$InvalidDataType(rowIndex),
+							_elm_lang$core$String$toFloat(s));
+					},
+					A3(_p41._0, header, rowIndex, item));
+			}));
+};
+var _jinjor$elm_csv_decode$CsvDecode$EmptyValue = F2(
+	function (a, b) {
+		return {ctor: 'EmptyValue', _0: a, _1: b};
+	});
+var _jinjor$elm_csv_decode$CsvDecode$getByIndex = F4(
+	function (rowIndex, err, item, i) {
+		var _p43 = function (_p42) {
+			return _elm_lang$core$List$head(
+				A2(_elm_lang$core$List$drop, i, _p42));
+		}(item);
+		if (_p43.ctor === 'Just') {
+			var _p44 = _p43._0;
+			return _elm_lang$core$Native_Utils.eq(
+				_elm_lang$core$String$trim(_p44),
+				'') ? _elm_lang$core$Result$Err(
+				A2(_jinjor$elm_csv_decode$CsvDecode$EmptyValue, rowIndex, _p44)) : _elm_lang$core$Result$Ok(_p44);
+		} else {
+			return _elm_lang$core$Result$Err(err);
+		}
+	});
+var _jinjor$elm_csv_decode$CsvDecode$ColumnNotFoundInBody = F3(
+	function (a, b, c) {
+		return {ctor: 'ColumnNotFoundInBody', _0: a, _1: b, _2: c};
+	});
+var _jinjor$elm_csv_decode$CsvDecode$index = function (colIndex) {
+	return _jinjor$elm_csv_decode$CsvDecode$Decoder(
+		F3(
+			function (_p45, rowIndex, item) {
+				return A4(
+					_jinjor$elm_csv_decode$CsvDecode$getByIndex,
+					rowIndex,
+					A3(_jinjor$elm_csv_decode$CsvDecode$ColumnNotFoundInBody, rowIndex, colIndex, _elm_lang$core$Maybe$Nothing),
+					item,
+					colIndex);
+			}));
+};
+var _jinjor$elm_csv_decode$CsvDecode$ColumnNotFoundInHeader = F2(
+	function (a, b) {
+		return {ctor: 'ColumnNotFoundInHeader', _0: a, _1: b};
+	});
+var _jinjor$elm_csv_decode$CsvDecode$field = function (key) {
+	return _jinjor$elm_csv_decode$CsvDecode$Decoder(
+		F3(
+			function (header, rowIndex, item) {
+				return A2(
+					_elm_lang$core$Maybe$withDefault,
+					_elm_lang$core$Result$Err(
+						A2(_jinjor$elm_csv_decode$CsvDecode$ColumnNotFoundInHeader, rowIndex, key)),
+					A2(
+						_elm_lang$core$Maybe$map,
+						function (index) {
+							return _elm_lang$core$Native_Utils.eq(index, -1) ? _elm_lang$core$Result$Err(
+								A2(_jinjor$elm_csv_decode$CsvDecode$AmbiguousFieldToAccess, rowIndex, key)) : A4(
+								_jinjor$elm_csv_decode$CsvDecode$getByIndex,
+								rowIndex,
+								A3(
+									_jinjor$elm_csv_decode$CsvDecode$ColumnNotFoundInBody,
+									rowIndex,
+									index,
+									_elm_lang$core$Maybe$Just(key)),
+								item,
+								index);
+						},
+						A2(_elm_lang$core$Dict$get, key, header.nameToIndex)));
+			}));
+};
+var _jinjor$elm_csv_decode$CsvDecode$fieldsAfter = function (key) {
+	return _jinjor$elm_csv_decode$CsvDecode$Decoder(
+		F3(
+			function (header, rowIndex, item) {
+				var _p46 = A2(_elm_lang$core$Dict$get, key, header.nameToIndex);
+				if (_p46.ctor === 'Just') {
+					if (_p46._0 === -1) {
+						return _elm_lang$core$Result$Err(
+							A2(_jinjor$elm_csv_decode$CsvDecode$AmbiguousFieldToAccess, rowIndex, key));
+					} else {
+						return A4(
+							_jinjor$elm_csv_decode$CsvDecode$makeDictInRange,
+							function (i) {
+								return _elm_lang$core$Native_Utils.cmp(i, _p46._0) > 0;
+							},
+							header,
+							rowIndex,
+							item);
+					}
+				} else {
+					return _elm_lang$core$Result$Err(
+						A2(_jinjor$elm_csv_decode$CsvDecode$ColumnNotFoundInHeader, rowIndex, key));
+				}
+			}));
+};
+var _jinjor$elm_csv_decode$CsvDecode$fieldsBetween = F2(
+	function (key1, key2) {
+		return _jinjor$elm_csv_decode$CsvDecode$Decoder(
+			F3(
+				function (header, rowIndex, item) {
+					var _p47 = {
+						ctor: '_Tuple2',
+						_0: A2(_elm_lang$core$Dict$get, key1, header.nameToIndex),
+						_1: A2(_elm_lang$core$Dict$get, key2, header.nameToIndex)
+					};
+					_v44_4:
+					do {
+						if (_p47.ctor === '_Tuple2') {
+							if (_p47._0.ctor === 'Just') {
+								if (_p47._1.ctor === 'Just') {
+									if (_p47._0._0 === -1) {
+										return _elm_lang$core$Result$Err(
+											A2(_jinjor$elm_csv_decode$CsvDecode$AmbiguousFieldToAccess, rowIndex, key1));
+									} else {
+										if (_p47._1._0 === -1) {
+											return _elm_lang$core$Result$Err(
+												A2(_jinjor$elm_csv_decode$CsvDecode$AmbiguousFieldToAccess, rowIndex, key2));
+										} else {
+											return A4(
+												_jinjor$elm_csv_decode$CsvDecode$makeDictInRange,
+												function (i) {
+													return (_elm_lang$core$Native_Utils.cmp(i, _p47._0._0) > 0) && (_elm_lang$core$Native_Utils.cmp(i, _p47._1._0) < 0);
+												},
+												header,
+												rowIndex,
+												item);
+										}
+									}
+								} else {
+									break _v44_4;
+								}
+							} else {
+								return _elm_lang$core$Result$Err(
+									A2(_jinjor$elm_csv_decode$CsvDecode$ColumnNotFoundInHeader, rowIndex, key1));
+							}
+						} else {
+							break _v44_4;
+						}
+					} while(false);
+					return _elm_lang$core$Result$Err(
+						A2(_jinjor$elm_csv_decode$CsvDecode$ColumnNotFoundInHeader, rowIndex, key2));
+				}));
+	});
+var _jinjor$elm_csv_decode$CsvDecode$Field = function (a) {
+	return {ctor: 'Field', _0: a};
+};
+var _jinjor$elm_csv_decode$CsvDecode$Index = function (a) {
+	return {ctor: 'Index', _0: a};
+};
+
 var _rluiten$elm_date_extra$Date_Extra_Internal2$prevMonth = function (month) {
 	var _p0 = month;
 	switch (_p0.ctor) {
@@ -11040,6 +11774,37 @@ var _rluiten$elm_date_extra$Date_Extra_Format$utcIsoString = function (date) {
 };
 var _rluiten$elm_date_extra$Date_Extra_Format$isoFormat = '%Y-%m-%dT%H:%M:%S';
 
+var _user$project$RailwayColour$source = '\nname,colour\n井川線,000000\n山手線,99CC00\n湘南新宿ライン,E21F26\n東海道線,F68B1E\n横須賀線,007AC0\n横浜線,9ACD32\n相模線,2BA19C\n南武線,FFD600\n中央線快速電車,F15A22\n中央･総武各駅停車,FFD400\n総武快速線,007AC0\n中央本線,3B6C9C\n総武本線,FFC500\n青梅線,F15A22\n五日市線,F15A22\n宇都宮線,F68B1E\n高崎線,F68B1E\n八高線,A8A39D\n日光線,008000\n常磐線,00B261\n常磐線快速電車,00B261\n常磐線各駅停車,00B261\n内房線,00B2E5\n外房線,DC4534\n成田線,4CBA6C\n京葉線,FF4500\n武蔵野線,FF4500\n東金線,F15F2B\n久留里線,00B5AD\n吾妻線,0F5474\n水郡線,008000\n水戸線,3333ff\n両毛線,FFFF00\n京浜東北線,00BAE8\n西武線,F17900\n東武線,0F6CC3\n銀座線,F7931D\n丸ノ内線,E60012\n日比谷線,89A1AD\n東西線,00A7DB\n千代田線,009933\n有楽町線,C5C544\n半蔵門線,A757A8\n南北線,00ADA9\n副都心線,BB6633\n京成線,3366FF\n京王電鉄線,EA1C7C\n浅草線,E85298\n三田線,0079C2\n新宿線,6CBB5A\n大江戸線,B6007A\n小田急線,00a9ff\n東京モノレール,008000\nりんかい線,0000FF\n京急線,00CCFF\n日暮里･舎人ライナー,FF69B4\n相鉄線,CC0066\n東急線,DA0442\n横浜市営地下鉄,006BF0\nゆりかもめ,27404E\n埼京線,008000\n川越線,00B48D\n千葉モノレール,2843BA\n多摩モノレール,FF6633\n山陽電鉄線,0088CC\nつくばエクスプレス線,DIC255\n新京成線,3366FF\n伊東線,F68B1E\n高徳線,99CC00\n烏山線,008000\n鶴見線,FFFF00\n鹿島線,CC6633    \n';
+var _user$project$RailwayColour$RailwayColour = F2(
+	function (a, b) {
+		return {name: a, colour: b};
+	});
+var _user$project$RailwayColour$colourDecoder = A2(
+	_jinjor$elm_csv_decode$CsvDecode_ops['|='],
+	A2(
+		_jinjor$elm_csv_decode$CsvDecode_ops['|='],
+		_jinjor$elm_csv_decode$CsvDecode$succeed(_user$project$RailwayColour$RailwayColour),
+		_jinjor$elm_csv_decode$CsvDecode$field('name')),
+	_jinjor$elm_csv_decode$CsvDecode$field('colour'));
+var _user$project$RailwayColour$railwayColour = function (name) {
+	var _p0 = A2(_jinjor$elm_csv_decode$CsvDecode$runAll, _user$project$RailwayColour$colourDecoder, _user$project$RailwayColour$source);
+	var colours = _p0._0;
+	var error = _p0._1;
+	var found = _elm_lang$core$List$head(
+		A2(
+			_elm_lang$core$List$filter,
+			function (c) {
+				return _elm_lang$core$Native_Utils.eq(c.name, name);
+			},
+			colours));
+	var _p1 = found;
+	if (_p1.ctor === 'Nothing') {
+		return 'AAAAAA';
+	} else {
+		return _p1._0.colour;
+	}
+};
+
 var _user$project$Main$subscriptions = function (model) {
 	return _elm_lang$core$Platform_Sub$none;
 };
@@ -11093,8 +11858,20 @@ var _user$project$Main$statusRow = function (status) {
 						_0: A2(
 							_elm_lang$html$Html$td,
 							{ctor: '[]'},
-							{ctor: '[]'}),
-						_1: {ctor: '[]'}
+							{
+								ctor: '::',
+								_0: _elm_lang$html$Html$text(
+									_user$project$RailwayColour$railwayColour(status.name)),
+								_1: {ctor: '[]'}
+							}),
+						_1: {
+							ctor: '::',
+							_0: A2(
+								_elm_lang$html$Html$td,
+								{ctor: '[]'},
+								{ctor: '[]'}),
+							_1: {ctor: '[]'}
+						}
 					}
 				}
 			}
@@ -11153,7 +11930,18 @@ var _user$project$Main$list = function (statuses) {
 													_0: _elm_lang$html$Html$text('更新時刻'),
 													_1: {ctor: '[]'}
 												}),
-											_1: {ctor: '[]'}
+											_1: {
+												ctor: '::',
+												_0: A2(
+													_elm_lang$html$Html$th,
+													{ctor: '[]'},
+													{
+														ctor: '::',
+														_0: _elm_lang$html$Html$text('色'),
+														_1: {ctor: '[]'}
+													}),
+												_1: {ctor: '[]'}
+											}
 										}
 									}
 								}),
