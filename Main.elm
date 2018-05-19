@@ -11,6 +11,7 @@ import Json.Decode
 import Json.Decode.Pipeline
 import Http exposing (..)
 import RailwayColour exposing (..)
+import Style exposing (..)
 
 decodeStatus : Json.Decode.Decoder RailwayStatus
 decodeStatus =
@@ -114,14 +115,16 @@ list statuses =
             , tbody [] (List.map statusRow statuses)
             ]
         ]
-
+        
 statusRow : RailwayStatus -> Html Msg
 statusRow status =
     tr []
         [ td [] [ text status.name ]
         , td [] [ text status.company ]
         , td [] [ text (String.slice 1 -1 (toString ((format config config.format.dateTime) (Date.fromTime (toFloat status.lastupdateGmt * 1000))))) ]
-        , td [] [ text (RailwayColour.railwayColour status.name) ]
+        , td [] [ 
+            div [ Html.Attributes.style (Style.circleStyle (RailwayColour.railwayColour status.name)) ] [] 
+        ]
         -- , td [] [ text status.source ]
         , td []
             []

@@ -11774,7 +11774,7 @@ var _rluiten$elm_date_extra$Date_Extra_Format$utcIsoString = function (date) {
 };
 var _rluiten$elm_date_extra$Date_Extra_Format$isoFormat = '%Y-%m-%dT%H:%M:%S';
 
-var _user$project$RailwayColour$source = '\nname,colour\n井川線,000000\n山手線,99CC00\n湘南新宿ライン,E21F26\n東海道線,F68B1E\n横須賀線,007AC0\n横浜線,9ACD32\n相模線,2BA19C\n南武線,FFD600\n中央線快速電車,F15A22\n中央･総武各駅停車,FFD400\n総武快速線,007AC0\n中央本線,3B6C9C\n総武本線,FFC500\n青梅線,F15A22\n五日市線,F15A22\n宇都宮線,F68B1E\n高崎線,F68B1E\n八高線,A8A39D\n日光線,008000\n常磐線,00B261\n常磐線快速電車,00B261\n常磐線各駅停車,00B261\n内房線,00B2E5\n外房線,DC4534\n成田線,4CBA6C\n京葉線,FF4500\n武蔵野線,FF4500\n東金線,F15F2B\n久留里線,00B5AD\n吾妻線,0F5474\n水郡線,008000\n水戸線,3333ff\n両毛線,FFFF00\n京浜東北線,00BAE8\n西武線,F17900\n東武線,0F6CC3\n銀座線,F7931D\n丸ノ内線,E60012\n日比谷線,89A1AD\n東西線,00A7DB\n千代田線,009933\n有楽町線,C5C544\n半蔵門線,A757A8\n南北線,00ADA9\n副都心線,BB6633\n京成線,3366FF\n京王電鉄線,EA1C7C\n浅草線,E85298\n三田線,0079C2\n新宿線,6CBB5A\n大江戸線,B6007A\n小田急線,00a9ff\n東京モノレール,008000\nりんかい線,0000FF\n京急線,00CCFF\n日暮里･舎人ライナー,FF69B4\n相鉄線,CC0066\n東急線,DA0442\n横浜市営地下鉄,006BF0\nゆりかもめ,27404E\n埼京線,008000\n川越線,00B48D\n千葉モノレール,2843BA\n多摩モノレール,FF6633\n山陽電鉄線,0088CC\nつくばエクスプレス線,DIC255\n新京成線,3366FF\n伊東線,F68B1E\n高徳線,99CC00\n烏山線,008000\n鶴見線,FFFF00\n鹿島線,CC6633    \n';
+var _user$project$RailwayColour$source = '\nname,colour\n山手線,99CC00\n湘南新宿ライン,E21F26\n東海道線,F68B1E\n横須賀線,007AC0\n横浜線,9ACD32\n相模線,2BA19C\n南武線,FFD600\n中央線快速電車,F15A22\n中央･総武各駅停車,FFD400\n総武快速線,007AC0\n中央本線,3B6C9C\n総武本線,FFC500\n青梅線,F15A22\n五日市線,F15A22\n宇都宮線,F68B1E\n高崎線,F68B1E\n八高線,A8A39D\n日光線,008000\n常磐線,00B261\n常磐線快速電車,00B261\n常磐線各駅停車,00B261\n内房線,00B2E5\n外房線,DC4534\n成田線,4CBA6C\n京葉線,FF4500\n武蔵野線,FF4500\n東金線,F15F2B\n久留里線,00B5AD\n吾妻線,0F5474\n水郡線,008000\n水戸線,3333ff\n両毛線,FFFF00\n京浜東北線,00BAE8\n西武線,F17900\n東武線,0F6CC3\n銀座線,F7931D\n丸ノ内線,E60012\n日比谷線,89A1AD\n東西線,00A7DB\n千代田線,009933\n有楽町線,C5C544\n半蔵門線,A757A8\n南北線,00ADA9\n副都心線,BB6633\n京成線,3366FF\n京王電鉄線,EA1C7C\n浅草線,E85298\n三田線,0079C2\n新宿線,6CBB5A\n大江戸線,B6007A\n小田急線,00a9ff\n東京モノレール,008000\nりんかい線,0000FF\n京急線,00CCFF\n日暮里･舎人ライナー,FF69B4\n相鉄線,CC0066\n東急線,DA0442\n横浜市営地下鉄,006BF0\nゆりかもめ,27404E\n埼京線,008000\n川越線,00B48D\n千葉モノレール,2843BA\n多摩モノレール,FF6633\n山陽電鉄線,0088CC\nつくばエクスプレス線,DIC255\n新京成線,3366FF\n伊東線,F68B1E\n高徳線,99CC00\n烏山線,008000\n鶴見線,FFFF00\n鹿島線,CC6633    \n';
 var _user$project$RailwayColour$RailwayColour = F2(
 	function (a, b) {
 		return {name: a, colour: b};
@@ -11803,6 +11803,54 @@ var _user$project$RailwayColour$railwayColour = function (name) {
 	} else {
 		return _p1._0.colour;
 	}
+};
+
+var _user$project$Style$circleStyle = function (colour) {
+	return {
+		ctor: '::',
+		_0: {ctor: '_Tuple2', _0: 'display', _1: 'inline-block'},
+		_1: {
+			ctor: '::',
+			_0: {
+				ctor: '_Tuple2',
+				_0: 'backgroundColor',
+				_1: A2(_elm_lang$core$Basics_ops['++'], '#', colour)
+			},
+			_1: {
+				ctor: '::',
+				_0: {ctor: '_Tuple2', _0: 'width', _1: '20px'},
+				_1: {
+					ctor: '::',
+					_0: {ctor: '_Tuple2', _0: 'height', _1: '20px'},
+					_1: {
+						ctor: '::',
+						_0: {ctor: '_Tuple2', _0: 'textAlign', _1: 'center'},
+						_1: {
+							ctor: '::',
+							_0: {ctor: '_Tuple2', _0: 'lineHeight', _1: '20px'},
+							_1: {
+								ctor: '::',
+								_0: {ctor: '_Tuple2', _0: 'verticalAlign', _1: 'middle'},
+								_1: {
+									ctor: '::',
+									_0: {ctor: '_Tuple2', _0: 'borderRadius', _1: '50%'},
+									_1: {
+										ctor: '::',
+										_0: {
+											ctor: '_Tuple2',
+											_0: 'border',
+											_1: A2(_elm_lang$core$Basics_ops['++'], 'solid 3px ', colour)
+										},
+										_1: {ctor: '[]'}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	};
 };
 
 var _user$project$Main$subscriptions = function (model) {
@@ -11860,8 +11908,16 @@ var _user$project$Main$statusRow = function (status) {
 							{ctor: '[]'},
 							{
 								ctor: '::',
-								_0: _elm_lang$html$Html$text(
-									_user$project$RailwayColour$railwayColour(status.name)),
+								_0: A2(
+									_elm_lang$html$Html$div,
+									{
+										ctor: '::',
+										_0: _elm_lang$html$Html_Attributes$style(
+											_user$project$Style$circleStyle(
+												_user$project$RailwayColour$railwayColour(status.name))),
+										_1: {ctor: '[]'}
+									},
+									{ctor: '[]'}),
 								_1: {ctor: '[]'}
 							}),
 						_1: {
