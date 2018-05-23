@@ -68,7 +68,7 @@ type Msg
 
 init : ( Model, Cmd Msg )
 init =
-    ( { message = "電車遅延", statuses = [] }, Cmd.none )
+    ( { message = "", statuses = [] }, Cmd.none )
 
 -- update
 
@@ -103,29 +103,17 @@ list : List RailwayStatus -> Html Msg
 list statuses =
     div [ class "p2" ]
         [ table []
-            [ thead []
-                [ tr []
-                    [ th [] [ text "線路名" ]
-                    , th [] [ text "会社" ]
-                    , th [] [ text "更新時刻" ]
-                    , th [] [ text "色" ]
-                    -- , th [] [ text "ソース" ]
-                    ]
-                ]
-            , tbody [] (List.map statusRow statuses)
+            [ tbody [] (List.map statusRow statuses)
             ]
         ]
         
 statusRow : RailwayStatus -> Html Msg
 statusRow status =
     tr []
-        [ td [] [ text status.name ]
-        , td [] [ text status.company ]
+        [ td [] [ div [ Html.Attributes.style (Style.circleStyle (RailwayColour.railwayColour status.name)) ] [] ]
+        , td [] [ div [ Html.Attributes.style (Style.companyNameStyle) ] [ text status.company ] ]
+        , td [] [ div [ Html.Attributes.style (Style.lineNameStyle) ] [ text status.name ] ]
         , td [] [ text (String.slice 1 -1 (toString ((format config config.format.dateTime) (Date.fromTime (toFloat status.lastupdateGmt * 1000))))) ]
-        , td [] [ 
-            div [ Html.Attributes.style (Style.circleStyle (RailwayColour.railwayColour status.name)) ] [] 
-        ]
-        -- , td [] [ text status.source ]
         , td []
             []
         ]

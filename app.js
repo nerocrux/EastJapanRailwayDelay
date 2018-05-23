@@ -11805,6 +11805,28 @@ var _user$project$RailwayColour$railwayColour = function (name) {
 	}
 };
 
+var _user$project$Style$lineNameStyle = {
+	ctor: '::',
+	_0: {ctor: '_Tuple2', _0: 'width', _1: '200px'},
+	_1: {
+		ctor: '::',
+		_0: {ctor: '_Tuple2', _0: 'textAlign', _1: 'left'},
+		_1: {ctor: '[]'}
+	}
+};
+var _user$project$Style$companyNameStyle = {
+	ctor: '::',
+	_0: {ctor: '_Tuple2', _0: 'width', _1: '100px'},
+	_1: {
+		ctor: '::',
+		_0: {ctor: '_Tuple2', _0: 'marginLeft', _1: '10px'},
+		_1: {
+			ctor: '::',
+			_0: {ctor: '_Tuple2', _0: 'textAlign', _1: 'left'},
+			_1: {ctor: '[]'}
+		}
+	}
+};
 var _user$project$Style$circleStyle = function (colour) {
 	return {
 		ctor: '::',
@@ -11841,7 +11863,15 @@ var _user$project$Style$circleStyle = function (colour) {
 											_0: 'border',
 											_1: A2(_elm_lang$core$Basics_ops['++'], 'solid 3px ', colour)
 										},
-										_1: {ctor: '[]'}
+										_1: {
+											ctor: '::',
+											_0: {ctor: '_Tuple2', _0: 'marginLeft', _1: '130px'},
+											_1: {
+												ctor: '::',
+												_0: {ctor: '_Tuple2', _0: 'marginTop', _1: '50px'},
+												_1: {ctor: '[]'}
+											}
+										}
 									}
 								}
 							}
@@ -11867,7 +11897,16 @@ var _user$project$Main$statusRow = function (status) {
 				{ctor: '[]'},
 				{
 					ctor: '::',
-					_0: _elm_lang$html$Html$text(status.name),
+					_0: A2(
+						_elm_lang$html$Html$div,
+						{
+							ctor: '::',
+							_0: _elm_lang$html$Html_Attributes$style(
+								_user$project$Style$circleStyle(
+									_user$project$RailwayColour$railwayColour(status.name))),
+							_1: {ctor: '[]'}
+						},
+						{ctor: '[]'}),
 					_1: {ctor: '[]'}
 				}),
 			_1: {
@@ -11877,7 +11916,18 @@ var _user$project$Main$statusRow = function (status) {
 					{ctor: '[]'},
 					{
 						ctor: '::',
-						_0: _elm_lang$html$Html$text(status.company),
+						_0: A2(
+							_elm_lang$html$Html$div,
+							{
+								ctor: '::',
+								_0: _elm_lang$html$Html_Attributes$style(_user$project$Style$companyNameStyle),
+								_1: {ctor: '[]'}
+							},
+							{
+								ctor: '::',
+								_0: _elm_lang$html$Html$text(status.company),
+								_1: {ctor: '[]'}
+							}),
 						_1: {ctor: '[]'}
 					}),
 				_1: {
@@ -11887,18 +11937,18 @@ var _user$project$Main$statusRow = function (status) {
 						{ctor: '[]'},
 						{
 							ctor: '::',
-							_0: _elm_lang$html$Html$text(
-								A3(
-									_elm_lang$core$String$slice,
-									1,
-									-1,
-									_elm_lang$core$Basics$toString(
-										A3(
-											_rluiten$elm_date_extra$Date_Extra_Format$format,
-											_rluiten$elm_date_extra$Date_Extra_Config_Config_ja_jp$config,
-											_rluiten$elm_date_extra$Date_Extra_Config_Config_ja_jp$config.format.dateTime,
-											_elm_lang$core$Date$fromTime(
-												_elm_lang$core$Basics$toFloat(status.lastupdateGmt) * 1000))))),
+							_0: A2(
+								_elm_lang$html$Html$div,
+								{
+									ctor: '::',
+									_0: _elm_lang$html$Html_Attributes$style(_user$project$Style$lineNameStyle),
+									_1: {ctor: '[]'}
+								},
+								{
+									ctor: '::',
+									_0: _elm_lang$html$Html$text(status.name),
+									_1: {ctor: '[]'}
+								}),
 							_1: {ctor: '[]'}
 						}),
 					_1: {
@@ -11908,16 +11958,18 @@ var _user$project$Main$statusRow = function (status) {
 							{ctor: '[]'},
 							{
 								ctor: '::',
-								_0: A2(
-									_elm_lang$html$Html$div,
-									{
-										ctor: '::',
-										_0: _elm_lang$html$Html_Attributes$style(
-											_user$project$Style$circleStyle(
-												_user$project$RailwayColour$railwayColour(status.name))),
-										_1: {ctor: '[]'}
-									},
-									{ctor: '[]'}),
+								_0: _elm_lang$html$Html$text(
+									A3(
+										_elm_lang$core$String$slice,
+										1,
+										-1,
+										_elm_lang$core$Basics$toString(
+											A3(
+												_rluiten$elm_date_extra$Date_Extra_Format$format,
+												_rluiten$elm_date_extra$Date_Extra_Config_Config_ja_jp$config,
+												_rluiten$elm_date_extra$Date_Extra_Config_Config_ja_jp$config.format.dateTime,
+												_elm_lang$core$Date$fromTime(
+													_elm_lang$core$Basics$toFloat(status.lastupdateGmt) * 1000))))),
 								_1: {ctor: '[]'}
 							}),
 						_1: {
@@ -11949,68 +12001,10 @@ var _user$project$Main$list = function (statuses) {
 				{
 					ctor: '::',
 					_0: A2(
-						_elm_lang$html$Html$thead,
+						_elm_lang$html$Html$tbody,
 						{ctor: '[]'},
-						{
-							ctor: '::',
-							_0: A2(
-								_elm_lang$html$Html$tr,
-								{ctor: '[]'},
-								{
-									ctor: '::',
-									_0: A2(
-										_elm_lang$html$Html$th,
-										{ctor: '[]'},
-										{
-											ctor: '::',
-											_0: _elm_lang$html$Html$text('線路名'),
-											_1: {ctor: '[]'}
-										}),
-									_1: {
-										ctor: '::',
-										_0: A2(
-											_elm_lang$html$Html$th,
-											{ctor: '[]'},
-											{
-												ctor: '::',
-												_0: _elm_lang$html$Html$text('会社'),
-												_1: {ctor: '[]'}
-											}),
-										_1: {
-											ctor: '::',
-											_0: A2(
-												_elm_lang$html$Html$th,
-												{ctor: '[]'},
-												{
-													ctor: '::',
-													_0: _elm_lang$html$Html$text('更新時刻'),
-													_1: {ctor: '[]'}
-												}),
-											_1: {
-												ctor: '::',
-												_0: A2(
-													_elm_lang$html$Html$th,
-													{ctor: '[]'},
-													{
-														ctor: '::',
-														_0: _elm_lang$html$Html$text('色'),
-														_1: {ctor: '[]'}
-													}),
-												_1: {ctor: '[]'}
-											}
-										}
-									}
-								}),
-							_1: {ctor: '[]'}
-						}),
-					_1: {
-						ctor: '::',
-						_0: A2(
-							_elm_lang$html$Html$tbody,
-							{ctor: '[]'},
-							A2(_elm_lang$core$List$map, _user$project$Main$statusRow, statuses)),
-						_1: {ctor: '[]'}
-					}
+						A2(_elm_lang$core$List$map, _user$project$Main$statusRow, statuses)),
+					_1: {ctor: '[]'}
 				}),
 			_1: {ctor: '[]'}
 		});
@@ -12018,7 +12012,7 @@ var _user$project$Main$list = function (statuses) {
 var _user$project$Main$init = {
 	ctor: '_Tuple2',
 	_0: {
-		message: '電車遅延',
+		message: '',
 		statuses: {ctor: '[]'}
 	},
 	_1: _elm_lang$core$Platform_Cmd$none

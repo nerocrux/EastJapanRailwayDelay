@@ -11,4 +11,20 @@ circleStyle colour =
     , ("verticalAlign", "middle")
     , ("borderRadius", "50%")
     , ("border", "solid 3px " ++ colour)
+    , ("marginLeft", "130px")
     ]
+    
+    
+companyNameStyle : List(String, String)
+companyNameStyle = 
+    [ ("width", "100px")
+    , ("marginLeft", "10px")
+    , ("textAlign", "left")
+    ]
+    
+lineNameStyle : List(String, String)
+lineNameStyle = 
+    [ ("width", "200px")
+    , ("textAlign", "left")
+    ]
+    
