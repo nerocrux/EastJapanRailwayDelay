@@ -11807,7 +11807,7 @@ var _user$project$RailwayColour$railwayColour = function (name) {
 
 var _user$project$Style$buttonStyle = {
 	ctor: '::',
-	_0: {ctor: '_Tuple2', _0: 'marginLeft', _1: '150px'},
+	_0: {ctor: '_Tuple2', _0: 'marginLeft', _1: '350px'},
 	_1: {
 		ctor: '::',
 		_0: {ctor: '_Tuple2', _0: 'marginTop', _1: '20px'},
@@ -12136,8 +12136,12 @@ var _user$project$Main$view = function (model) {
 						_elm_lang$html$Html$button,
 						{
 							ctor: '::',
-							_0: _elm_lang$html$Html_Events$onClick(_user$project$Main$GetStatuses),
-							_1: {ctor: '[]'}
+							_0: _elm_lang$html$Html_Attributes$style(_user$project$Style$buttonStyle),
+							_1: {
+								ctor: '::',
+								_0: _elm_lang$html$Html_Events$onClick(_user$project$Main$GetStatuses),
+								_1: {ctor: '[]'}
+							}
 						},
 						{
 							ctor: '::',

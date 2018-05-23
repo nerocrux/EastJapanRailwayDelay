@@ -93,7 +93,7 @@ view model =
     div []
         [ text model.message
         , list model.statuses
-        , button [ onClick GetStatuses ] [ text "情報取得" ]
+        , button [ Html.Attributes.style (Style.buttonStyle), onClick GetStatuses ] [ text "情報取得" ]
         ]
         
 list : List RailwayStatus -> Html Msg
