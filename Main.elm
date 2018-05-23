@@ -13,6 +13,9 @@ import Http exposing (..)
 import RailwayColour exposing (..)
 import Style exposing (..)
 
+getStatusCmd : Cmd Msg
+getStatusCmd = Http.send StatusesResult <| Http.get "https://rti-giken.jp/fhc/api/train_tetsudo/delay.json" decodeStatuses
+
 decodeStatus : Json.Decode.Decoder RailwayStatus
 decodeStatus =
     Json.Decode.Pipeline.decode RailwayStatus
@@ -45,7 +48,6 @@ main =
         , subscriptions = subscriptions
         }
 
-
 -- types
 
 type alias RailwayStatus =
@@ -68,7 +70,7 @@ type Msg
 
 init : ( Model, Cmd Msg )
 init =
-    ( { message = "", statuses = [] }, Cmd.none )
+    ( { message = "", statuses = [] }, getStatusCmd )
 
 -- update
 
@@ -76,12 +78,7 @@ update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         GetStatuses ->
-            let
-                cmd =
-                    Http.send StatusesResult <|
-                        Http.get "https://rti-giken.jp/fhc/api/train_tetsudo/delay.json" decodeStatuses
-            in
-                ( model, cmd )
+            ( model, getStatusCmd )
 
         StatusesResult (Ok statuses) ->
             ( { model | statuses = statuses, message = "" }, Cmd.none )
@@ -95,8 +92,8 @@ view : Model -> Html Msg
 view model =
     div []
         [ text model.message
-        , button [ onClick GetStatuses ] [ text "情報取得" ]
         , list model.statuses
+        , button [ onClick GetStatuses ] [ text "情報取得" ]
         ]
         
 list : List RailwayStatus -> Html Msg

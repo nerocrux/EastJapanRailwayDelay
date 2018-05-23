@@ -11805,6 +11805,15 @@ var _user$project$RailwayColour$railwayColour = function (name) {
 	}
 };
 
+var _user$project$Style$buttonStyle = {
+	ctor: '::',
+	_0: {ctor: '_Tuple2', _0: 'marginLeft', _1: '150px'},
+	_1: {
+		ctor: '::',
+		_0: {ctor: '_Tuple2', _0: 'marginTop', _1: '20px'},
+		_1: {ctor: '[]'}
+	}
+};
 var _user$project$Style$lineNameStyle = {
 	ctor: '::',
 	_0: {ctor: '_Tuple2', _0: 'width', _1: '200px'},
@@ -11866,11 +11875,7 @@ var _user$project$Style$circleStyle = function (colour) {
 										_1: {
 											ctor: '::',
 											_0: {ctor: '_Tuple2', _0: 'marginLeft', _1: '130px'},
-											_1: {
-												ctor: '::',
-												_0: {ctor: '_Tuple2', _0: 'marginTop', _1: '50px'},
-												_1: {ctor: '[]'}
-											}
+											_1: {ctor: '[]'}
 										}
 									}
 								}
@@ -12009,14 +12014,6 @@ var _user$project$Main$list = function (statuses) {
 			_1: {ctor: '[]'}
 		});
 };
-var _user$project$Main$init = {
-	ctor: '_Tuple2',
-	_0: {
-		message: '',
-		statuses: {ctor: '[]'}
-	},
-	_1: _elm_lang$core$Platform_Cmd$none
-};
 var _user$project$Main$encodeStatus = function (record) {
 	return _elm_lang$core$Json_Encode$object(
 		{
@@ -12082,15 +12079,23 @@ var _user$project$Main$Model = F2(
 var _user$project$Main$StatusesResult = function (a) {
 	return {ctor: 'StatusesResult', _0: a};
 };
+var _user$project$Main$getStatusCmd = A2(
+	_elm_lang$http$Http$send,
+	_user$project$Main$StatusesResult,
+	A2(_elm_lang$http$Http$get, 'https://rti-giken.jp/fhc/api/train_tetsudo/delay.json', _user$project$Main$decodeStatuses));
+var _user$project$Main$init = {
+	ctor: '_Tuple2',
+	_0: {
+		message: '',
+		statuses: {ctor: '[]'}
+	},
+	_1: _user$project$Main$getStatusCmd
+};
 var _user$project$Main$update = F2(
 	function (msg, model) {
 		var _p0 = msg;
 		if (_p0.ctor === 'GetStatuses') {
-			var cmd = A2(
-				_elm_lang$http$Http$send,
-				_user$project$Main$StatusesResult,
-				A2(_elm_lang$http$Http$get, 'https://rti-giken.jp/fhc/api/train_tetsudo/delay.json', _user$project$Main$decodeStatuses));
-			return {ctor: '_Tuple2', _0: model, _1: cmd};
+			return {ctor: '_Tuple2', _0: model, _1: _user$project$Main$getStatusCmd};
 		} else {
 			if (_p0._0.ctor === 'Ok') {
 				return {
@@ -12124,21 +12129,21 @@ var _user$project$Main$view = function (model) {
 			_0: _elm_lang$html$Html$text(model.message),
 			_1: {
 				ctor: '::',
-				_0: A2(
-					_elm_lang$html$Html$button,
-					{
-						ctor: '::',
-						_0: _elm_lang$html$Html_Events$onClick(_user$project$Main$GetStatuses),
-						_1: {ctor: '[]'}
-					},
-					{
-						ctor: '::',
-						_0: _elm_lang$html$Html$text('情報取得'),
-						_1: {ctor: '[]'}
-					}),
+				_0: _user$project$Main$list(model.statuses),
 				_1: {
 					ctor: '::',
-					_0: _user$project$Main$list(model.statuses),
+					_0: A2(
+						_elm_lang$html$Html$button,
+						{
+							ctor: '::',
+							_0: _elm_lang$html$Html_Events$onClick(_user$project$Main$GetStatuses),
+							_1: {ctor: '[]'}
+						},
+						{
+							ctor: '::',
+							_0: _elm_lang$html$Html$text('情報取得'),
+							_1: {ctor: '[]'}
+						}),
 					_1: {ctor: '[]'}
 				}
 			}

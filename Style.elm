@@ -28,3 +28,9 @@ lineNameStyle =
     , ("textAlign", "left")
     ]
     
+    
+buttonStyle : List(String, String)
+buttonStyle = 
+    [ ("marginLeft", "150px")
+    , ("marginTop", "20px")
+    ]
