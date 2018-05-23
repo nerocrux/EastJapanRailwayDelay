@@ -11805,6 +11805,99 @@ var _user$project$RailwayColour$railwayColour = function (name) {
 	}
 };
 
+var _user$project$RailwayCompany$eastJapanRailwayCompanyList = {
+	ctor: '::',
+	_0: 'JR東日本',
+	_1: {
+		ctor: '::',
+		_0: '西武鉄道',
+		_1: {
+			ctor: '::',
+			_0: '東武鉄道',
+			_1: {
+				ctor: '::',
+				_0: '東京メトロ',
+				_1: {
+					ctor: '::',
+					_0: '京成電鉄',
+					_1: {
+						ctor: '::',
+						_0: '京王電鉄',
+						_1: {
+							ctor: '::',
+							_0: '都営地下鉄',
+							_1: {
+								ctor: '::',
+								_0: '小田急電鉄',
+								_1: {
+									ctor: '::',
+									_0: '東京モノレール',
+									_1: {
+										ctor: '::',
+										_0: 'りんかい線',
+										_1: {
+											ctor: '::',
+											_0: '京浜急行電鉄',
+											_1: {
+												ctor: '::',
+												_0: '日暮里･舎人ライナー',
+												_1: {
+													ctor: '::',
+													_0: '相模鉄道',
+													_1: {
+														ctor: '::',
+														_0: '東京急行電鉄',
+														_1: {
+															ctor: '::',
+															_0: '横浜市交通局',
+															_1: {
+																ctor: '::',
+																_0: 'ゆりかもめ',
+																_1: {
+																	ctor: '::',
+																	_0: '千葉モノレール',
+																	_1: {
+																		ctor: '::',
+																		_0: '多摩モノレール',
+																		_1: {
+																			ctor: '::',
+																			_0: '山陽電気鉄道',
+																			_1: {
+																				ctor: '::',
+																				_0: 'つくばエクスプレス',
+																				_1: {
+																					ctor: '::',
+																					_0: '新京成電鉄',
+																					_1: {
+																						ctor: '::',
+																						_0: 'JR関東',
+																						_1: {ctor: '[]'}
+																					}
+																				}
+																			}
+																		}
+																	}
+																}
+															}
+														}
+													}
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+};
+var _user$project$RailwayCompany$isEasyJapanCompany = function (company) {
+	return A2(_elm_lang$core$List$member, company, _user$project$RailwayCompany$eastJapanRailwayCompanyList);
+};
+
 var _user$project$Style$buttonStyle = {
 	ctor: '::',
 	_0: {ctor: '_Tuple2', _0: 'marginLeft', _1: '350px'},
@@ -12008,7 +12101,15 @@ var _user$project$Main$list = function (statuses) {
 					_0: A2(
 						_elm_lang$html$Html$tbody,
 						{ctor: '[]'},
-						A2(_elm_lang$core$List$map, _user$project$Main$statusRow, statuses)),
+						A2(
+							_elm_lang$core$List$map,
+							_user$project$Main$statusRow,
+							A2(
+								_elm_lang$core$List$filter,
+								function (i) {
+									return _user$project$RailwayCompany$isEasyJapanCompany(i.company);
+								},
+								statuses))),
 					_1: {ctor: '[]'}
 				}),
 			_1: {ctor: '[]'}

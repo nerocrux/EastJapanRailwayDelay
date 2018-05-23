@@ -11,6 +11,7 @@ import Json.Decode
 import Json.Decode.Pipeline
 import Http exposing (..)
 import RailwayColour exposing (..)
+import RailwayCompany exposing (..)
 import Style exposing (..)
 
 getStatusCmd : Cmd Msg
@@ -23,12 +24,12 @@ decodeStatus =
         |> Json.Decode.Pipeline.required "company" (Json.Decode.string)
         |> Json.Decode.Pipeline.required "lastupdate_gmt" (Json.Decode.int)
         |> Json.Decode.Pipeline.required "source" (Json.Decode.string)
-
+ 
 
 decodeStatuses : Json.Decode.Decoder (List RailwayStatus)
 decodeStatuses =
     Json.Decode.list decodeStatus
-
+    
 
 encodeStatus : RailwayStatus -> Json.Encode.Value
 encodeStatus record =
@@ -100,7 +101,7 @@ list : List RailwayStatus -> Html Msg
 list statuses =
     div [ class "p2" ]
         [ table []
-            [ tbody [] (List.map statusRow statuses)
+            [ tbody [] (List.map statusRow (List.filter (\i -> RailwayCompany.isEasyJapanCompany i.company) statuses))
             ]
         ]
         
