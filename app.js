@@ -11903,8 +11903,12 @@ var _user$project$Style$buttonStyle = {
 	_0: {ctor: '_Tuple2', _0: 'marginLeft', _1: '350px'},
 	_1: {
 		ctor: '::',
-		_0: {ctor: '_Tuple2', _0: 'marginTop', _1: '20px'},
-		_1: {ctor: '[]'}
+		_0: {ctor: '_Tuple2', _0: 'marginTop', _1: '400px'},
+		_1: {
+			ctor: '::',
+			_0: {ctor: '_Tuple2', _0: 'position', _1: 'fixed'},
+			_1: {ctor: '[]'}
+		}
 	}
 };
 var _user$project$Style$lineNameStyle = {

@@ -32,5 +32,6 @@ lineNameStyle =
 buttonStyle : List(String, String)
 buttonStyle = 
     [ ("marginLeft", "350px")
-    , ("marginTop", "20px")
+    , ("marginTop", "400px")
+    , ("position", "fixed")
     ]
